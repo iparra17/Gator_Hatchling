@@ -1,0 +1,86 @@
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <string>
+using namespace std;
+int main()
+{
+	ifstream in1;
+	ofstream out1;
+	string filename;
+
+	cout << "Enter the filename that has the student scores: ";
+	cin >> filename;
+	in1.open(filename);
+	out1.open("results.txt");
+	if (in1)
+	{
+		int numtests;
+		cout << "Enter the number of test scores per student: ";
+		cin >> numtests;
+		//there are 8 rows and 5 columns, the first column is the student's ID, DO NOT COUNT IT.
+		int id, totalS = 0, totalU = 0, totalI = 0; //each row indicates a student
+		//for (int row = 1; row <= 8; row++)
+		while (in1 >> id)
+		{
+			double avg, sum = 0, score;
+			int excusedAbscence = 0;
+			for (int i = 0; i < numtests; i++)
+			{
+				in1 >> score;
+				if (score == -1)
+				{
+					excusedAbscence++;
+				}
+				else
+				{
+					sum += score;
+				}
+			}
+			if (excusedAbscence >= 2)
+			{
+				out1 << "ID=" << id << " Excused=" << excusedAbscence << " Grade=I" << endl;
+				totalI++;
+			}
+			else if (excusedAbscence == 1)
+			{
+				avg = sum / (numtests - 1);
+				if (avg >= 50.0)
+				{
+					out1 << "ID=" << id << " Average=" << fixed << showpoint << setprecision(1) << avg << " Grade=S" << endl;
+					totalS++;
+				}
+				else
+				{
+					out1 << "ID=" << id << " Average= " << fixed << showpoint << setprecision(1) << avg << " Grade=U" << endl;
+					totalU++;
+				}
+			}
+			else
+			{
+				avg = sum / numtests;
+				if (avg >= 50.0)
+				{
+					out1 << "ID=" << id << " Average=" << fixed << showpoint << setprecision(1) << avg << " Grade=S" << endl;
+					totalS++;
+				}
+				else
+				{
+					out1 << "ID=" << id << " Average=" << fixed << showpoint << setprecision(1) << avg << " Grade=U" << endl;
+					totalU++;
+				}
+			}
+		}
+		out1 << "Number of Grade types\n";
+		out1 << setw(5) << "S" << setw(5) << "I" << setw(5) << "U" << endl;
+		out1 << setw(5) << totalS << setw(5) << totalI << setw(5) << totalU << endl;
+	}
+	else
+	{
+		cout << "The program does not exist.\n";
+	}
+	in1.close();
+	out1.close();
+	system("Pause");
+	return 0;
+}
